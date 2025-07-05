@@ -70,7 +70,7 @@ export default function BreathingGame() {
   const currentPhase = technique ? technique.phases[currentPhaseIndex] : null;
 
   useEffect(() => {
-    if (!isActive || !currentPhase) return;
+    if (!isActive || !technique || !currentPhase) return;
 
     let frame: number;
     const duration = currentPhase.duration;
@@ -83,11 +83,12 @@ export default function BreathingGame() {
         frame = requestAnimationFrame(loop);
       } else {
         setProgress(0);
-        const nextIndex = (currentPhaseIndex + 1) % technique!.phases.length;
+        if (!technique) return;
+        const nextIndex = (currentPhaseIndex + 1) % technique.phases.length;
         if (nextIndex === 0) {
           const newCycle = cycleCount + 1;
           setCycleCount(newCycle);
-          if (newCycle >= technique!.cycles) {
+          if (newCycle >= technique.cycles) {
             setIsActive(false);
             return;
           }
@@ -145,7 +146,7 @@ export default function BreathingGame() {
 
   const circleProps = getCircleProps();
 
-  if (!selectedTechnique) {
+  if (!technique) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-green-50 px-4">
         <h1 className="text-4xl font-bold text-gray-800 mb-8">Choose a Breathing Technique</h1>
